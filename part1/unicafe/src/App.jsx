@@ -12,16 +12,28 @@ const Header = ({text}) => {
 const StatisticLine = ({statistic, value}) => {
   return (
     <>
-      <p>{statistic} {value}</p>
+      <tr>
+        <td>{statistic}</td> <td>{value}</td>
+      </tr>
+    </>
+  )
+}
+
+const Positive = ({statistic, value}) => {
+  return (
+    <>
+      <tr>
+        <td>{statistic}</td> <td>{value} %</td>
+      </tr>
     </>
   )
 }
 
 const Statistics = ({good, neutral, bad}) => {
-  let avgNum = good*1 + neutral*(0) + bad*(-1)
+  let avgNum = good*(1) + neutral*(0) + bad*(-1)
   let all = good + neutral + bad
   let avg = all === 0 ? 0 : avgNum / all
-  let pos = all === 0 ? 0 : good / all
+  let pos = all === 0 ? 0 : (good / all)*100
 
   if (all === 0) {
     return (
@@ -35,12 +47,14 @@ const Statistics = ({good, neutral, bad}) => {
   return (
     <>
       <Header text="statistics" />
+      <table>
       <StatisticLine statistic="good" value={good} />
       <StatisticLine statistic="neutral" value={neutral} />
       <StatisticLine statistic="bad" value={bad} />
       <StatisticLine statistic="all" value={all} />
-      <StatisticLine statistic="average" value={avg} />
-      <StatisticLine statistic="positive" value={pos} />
+      <StatisticLine statistic="average" value={avg.toFixed(1)} />
+      <Positive statistic="positive" value={pos.toFixed(1)} />
+      </table>
     </>
   )
 }
