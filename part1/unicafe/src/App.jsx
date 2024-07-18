@@ -12,9 +12,11 @@ const Header = ({text}) => {
 const StatisticLine = ({statistic, value}) => {
   return (
     <>
-      <tr>
-        <td>{statistic}</td> <td>{value}</td>
-      </tr>
+      <tbody>
+        <tr>
+          <td>{statistic}</td><td>{value}</td>
+        </tr>
+      </tbody>
     </>
   )
 }
@@ -22,9 +24,11 @@ const StatisticLine = ({statistic, value}) => {
 const Positive = ({statistic, value}) => {
   return (
     <>
-      <tr>
-        <td>{statistic}</td> <td>{value} %</td>
-      </tr>
+      <tbody>
+        <tr>
+          <td>{statistic}</td><td>{value} %</td>
+        </tr>
+      </tbody>
     </>
   )
 }
