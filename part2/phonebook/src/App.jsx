@@ -1,30 +1,32 @@
-import { useState } from 'react'
+import axios from 'axios'
+import { useState, useEffect } from 'react'
 import Numbers from './components/Numbers'
 import Form from "./components/Form"
 import Filter from "./components/Filter"
 import Header from "./components/Header"
+//import { useEffect } from 'react'
 
 const App = () => {
-  /*
-    persons -- The actual phone book
-    newName -- input to the "name" field
-    newPhone -- phone number, input "number" field
-    filter -- filter shown records
-  */
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 },
-    { name: 'Tonni Monni', number: '123', id: 5 },
-    { name: 'Hiisi Biisi', number: '666', id: 6},
-    { name: 'Kaikille Oikeus', number: '7777', id: 7},
-    { name: 'Huuli Muuli', number: '1', id: 8},
-
-  ]) 
+  /**
+   * persons -- The actual phone book
+   * newName -- input to the "name" field
+   * newPhone -- phone number, input "number" field
+   * filter -- filter shown records
+   */
+  
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [filter, setFilter] = useState('')
+
+  /**
+   *  Query persons from json db
+   */
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/persons")
+      .then(response  => setPersons(response.data))
+  }, [])
 
   /*
   Handlers
