@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
+
+import Error from './components/Error'
 import Numbers from './components/Numbers'
+import Notification from './components/Notification'
 import Form from "./components/Form"
 import Filter from "./components/Filter"
 import Header from "./components/Header"
@@ -17,7 +20,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [filter, setFilter] = useState('')
-  const [deleteeId, setDeleteeId] = useState('')
+  const [message, setMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   /**
    * Handlers
@@ -25,7 +29,6 @@ const App = () => {
   const handleNameInputChange = (event) => setNewName(event.target.value)
   const handlePhoneInputChange = (event) => setNewPhone(event.target.value)
   const handleFilterChange = (event) => setFilter(event.target.value)
-  //const handleDeleteAction = (event) => setDeleteeId(event.target.value)
 
   /**
    *  GET persons from json db
@@ -53,22 +56,26 @@ const App = () => {
           .then(response => {
             setPersons(persons.map(p => p.id !== tmpId ? p : response))
           })
-        
-        setNewName('')
-        setNewPhone('')
-      }
-      return 
-    }
 
-    const newRecord = {name : newName, number: newPhone, id: crypto.randomUUID().toString()}
+        /* setMessage(`Added ${newName}`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 3000) */
+      }
+    } else {
+        const newRecord = {name : newName, number: newPhone, id: crypto.randomUUID().toString()}
     
-    phoneService
-      .create(newRecord)
-      .then(response => {
-        setPersons(persons.concat(response.data))
-        setNewName('')
-        setNewPhone('')
-      })
+        phoneService
+          .create(newRecord)
+          .then(response => {
+            setPersons(persons.concat(response.data))
+          })
+    }
+    
+    setMessage(`Added ${newName}`)
+    setNewName('')
+    setNewPhone('')
+    setTimeout(() => { setMessage(null) }, 3000)
   }
 
   /**
@@ -79,9 +86,18 @@ const App = () => {
     const tmpName = persons.find(p => p.id === id).name
     
     if (window.confirm(`Delete ${tmpName}?`)) {
-        setPersons(persons.filter(p => p.id != id))
-        phoneService
-          .remove(id)
+      setPersons(persons.filter(p => p.id != id))
+      phoneService
+        .remove(id)
+        .then(response => {
+          console.log("success ahaha")
+        })
+        .catch(error => {
+          console.log('fail oh nooooo')
+          const tmpMsg = `Information on ${tmpName} has already been removed from the server`
+          setErrorMessage(tmpMsg)
+          setTimeout(() => { setErrorMessage(null) }, 3000)
+        })
     }
 
   }
@@ -89,6 +105,8 @@ const App = () => {
   return (
     <div>
       <Header text="Phonebook" />
+      <Notification message={message} />
+      <Error message={errorMessage} />
       <Filter filter={filter} handler={handleFilterChange} />
       <Header text="Add a new" />
       <Form nameVal={newName}
