@@ -43,7 +43,20 @@ const App = () => {
     event.preventDefault()
 
     if (persons.find(e => e.name === newName)) {
-      alert(`${newName} is already added to the phonebook`)
+      const t = `${newName} is already added to the phonebook, replace the old number with a new one?`
+      
+      if (window.confirm(t)) {  
+        const tmpId = persons.find(p => p.name === newName).id
+        
+        phoneService
+          .update(tmpId, {name: newName, number: newPhone, id: tmpId})
+          .then(response => {
+            setPersons(persons.map(p => p.id !== tmpId ? p : response))
+          })
+        
+        setNewName('')
+        setNewPhone('')
+      }
       return 
     }
 
@@ -62,8 +75,10 @@ const App = () => {
    * DELETE a person from the database
    */
   const removePerson = (id) => {
+
+    const tmpName = persons.find(p => p.id === id).name
     
-    if (window.confirm("Delete?")) {
+    if (window.confirm(`Delete ${tmpName}?`)) {
         setPersons(persons.filter(p => p.id != id))
         phoneService
           .remove(id)
