@@ -1,3 +1,5 @@
+import Weather from "./Weather"
+
 const Datum = ({name, val}) => {
   return (
     <>
@@ -33,6 +35,8 @@ const CountryData = ({ obj }) => {
   const area = obj.area
   const languages = Object.values(obj.languages)
   const flagUrl = obj.flags.png
+  const lat = obj.capitalInfo.latlng[0]
+  const lng = obj.capitalInfo.latlng[1]
 
     return (
         <>
@@ -43,6 +47,7 @@ const CountryData = ({ obj }) => {
             <Languages langs={languages} />
           </ul>
           <Flag url={flagUrl} />
+          <Weather lat={lat} lon={lng} capital={capital}/>
         </>
     )
 }
