@@ -1,6 +1,7 @@
 import * as filterService  from "../services/filterLogic"
+import CountryData from "./CountryData"
 
-const Country = ({ country }) => {
+const CountryName = ({ country }) => {
     return (
         <>
           <p>{country.name.common}</p>
@@ -19,8 +20,19 @@ const Countries = ({ countries, filter }) => {
             </>
         )
     }
+
+    if (filteredCountries.length === 1) {
+        const countryObj = filteredCountries[0]
+        console.log(countryObj)
+        return (
+            <>
+              <CountryData obj={countryObj}/>
+            </>
+        )
+    }
+
     return (
-        filteredCountries.map(country => <Country key={country.name.common} country={country}/>)
+        filteredCountries.map(country => <CountryName key={country.name.common} country={country}/>)
     )
 }
 
