@@ -55,27 +55,37 @@ const App = () => {
           .update(tmpId, {name: newName, number: newPhone, id: tmpId})
           .then(response => {
             setPersons(persons.map(p => p.id !== tmpId ? p : response))
+            setMessage(`Added ${newName}`)
+            setNewName('')
+            setNewPhone('')
+            setTimeout(() => { setMessage(null) }, 3000)
           })
-
-        /* setMessage(`Added ${newName}`)
-        setTimeout(() => {
-          setMessage(null)
-        }, 3000) */
+          .catch(error => {
+            const tmpMsg = error.response.data.error
+            setErrorMessage(tmpMsg)
+            setTimeout(() => { setErrorMessage(null) }, 5000)
+            return
+          })
       }
     } else {
-        const newRecord = {name : newName, number: newPhone, id: crypto.randomUUID().toString()}
+        const newRecord = {name : newName, number: newPhone}
     
         phoneService
           .create(newRecord)
           .then(response => {
             setPersons(persons.concat(response.data))
+            setMessage(`Added ${newName}`)
+            setNewName('')
+            setNewPhone('')
+            setTimeout(() => { setMessage(null) }, 3000)
+          })
+          .catch(error => {
+            const tmpMsg = error.response.data.error
+            setErrorMessage(tmpMsg)
+            setTimeout(() => { setErrorMessage(null) }, 5000)
+            return
           })
     }
-    
-    setMessage(`Added ${newName}`)
-    setNewName('')
-    setNewPhone('')
-    setTimeout(() => { setMessage(null) }, 3000)
   }
 
   /**

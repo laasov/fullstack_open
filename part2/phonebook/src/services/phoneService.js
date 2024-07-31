@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = 'http://localhost:3001/persons'
+const baseUrl = '/api/persons'
 
 // CRUD
 
@@ -19,7 +19,6 @@ const update = (id, newObject) => {
 
 const remove = id => {
     const request = axios.delete(`${baseUrl}/${id}`)
-    //console.log(request.then(response => console.log(response.status)))
     return request
 }
 
