@@ -1,6 +1,13 @@
 const { test, after, beforeEach } = require('node:test')
+
 const Blog = require('../models/blog')
+const app = require('../app')
+
 const assert = require('node:assert')
+const mongoose = require('mongoose')
+const supertest = require('supertest')
+
+const api = supertest(app)
 
 const initialBlogs = [
   { 
@@ -29,12 +36,6 @@ const initialBlogs = [
   },
 ]
 
-const mongoose = require('mongoose')
-const supertest = require('supertest')
-const app = require('../app')
-
-const api = supertest(app)
-
 beforeEach(async () => {
   await Blog.deleteMany({})
   
@@ -60,7 +61,7 @@ test('there are exactly three blog posts', async () => {
   assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
-// 4.9.
+// 4.9
 test('blog posts are identified by the property "id"', async () => {
   const response = await api.get('/api/blogs')
   const blogs = response.body
@@ -71,16 +72,36 @@ test('blog posts are identified by the property "id"', async () => {
 
 // 4.10
 test('HTTP POST to /api/blogs increases blog count by one"', async () => {
-  let response = await api.get('/api/blogs')
-  const initialCount = response.body.length
 
   const newBlog = Blog ({
-    _id: '5a422aa71b54a676234d17f6',
     title: 'Test Blog',
     author: 'Hammurabi',
     url: 'www.gochujang.hot',
     likes: 100000000,
-    _v: 0
+  })
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+
+  const response = await api.get('/api/blogs')
+  const newCount = response.body.length
+
+  const contents = response.body.map(r => r.title)
+
+  assert.strictEqual(newCount, initialBlogs.length + 1)
+  // Test "Correct saving", i.e., that the response actually contains at sent data
+  assert(contents.includes('Test Blog'))
+})
+
+// 4.11
+test('If request contains no likes, defults to  0', async () => {
+
+  const newBlog = Blog ({
+    title: 'Gods do not like it',
+    author: 'Sun Wukong',
+    url: 'www.stolenpeaches.omg',
   })
 
   await api
@@ -89,9 +110,40 @@ test('HTTP POST to /api/blogs increases blog count by one"', async () => {
     .expect(201)
 
   response = await api.get('/api/blogs')
-  const newCount = response.body.length
 
-  assert.strictEqual(newCount, initialCount + 1)
+  const contents = response.body.map(r => r.likes)
+
+  assert(contents.includes(0))
+})
+
+// 4.12
+test('If request does not contain title, backend responds with 400', async () => {
+
+  const newBlog = Blog ({
+    author: 'Mao',
+    url: 'www.tofu.cat',
+  })
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+})
+
+// 4.12
+test('If request does not contain url, backend responds with 400', async () => {
+
+  const newBlog = Blog ({
+    title: 'Yeaaah',
+    author: 'Who'
+  })
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
 })
 
 after(async () => {
