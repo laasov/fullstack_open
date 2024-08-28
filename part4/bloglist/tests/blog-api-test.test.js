@@ -146,6 +146,66 @@ test('If request does not contain url, backend responds with 400', async () => {
 
 })
 
+// 4.13
+test('Deleting a blog deletes a blog', async () => {
+
+  const newBlog = Blog ({
+    title: 'Why me??',
+    author: 'Please do not delete me',
+    url: 'www.nnooooooooo.no',
+    likes: 1
+  })
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+  
+  let response = await api.get('/api/blogs')
+  const added = response.body[initialBlogs.length]
+
+  await api
+    .delete(`/api/blogs/${added.id}`)
+    .expect(204)
+
+  response = await api.get('/api/blogs')
+
+  assert.equal(response.body.length, initialBlogs.length)
+})
+
+test.only('Posting and then updating a blog updates the blog', async () => {
+
+  const newBlog = Blog ({
+    title: 'Nothing ever changes',
+    author: 'Conservative',
+    url: 'www.primordialboy.fi',
+    likes: 0
+  })
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+
+  let response = await api.get('/api/blogs')
+  const added = response.body[initialBlogs.length]
+
+  added.title = 'A CHANGE HAHAAH'
+  added.author = 'Progressive'
+  added.url = 'www.modernboy.fi'
+  added.likes = 1
+
+  
+  await api
+    .put(`/api/blogs/${added.id}`)
+    .expect(200)
+
+  response = await api.get('/api/blogs')
+
+  assert.equal(response.body.length, initialBlogs.length + 1)
+
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
