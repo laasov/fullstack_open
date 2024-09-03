@@ -173,7 +173,7 @@ test('Deleting a blog deletes a blog', async () => {
   assert.equal(response.body.length, initialBlogs.length)
 })
 
-test.only('Posting and then updating a blog updates the blog', async () => {
+test('Posting and then updating a blog updates the blog', async () => {
 
   const newBlog = Blog ({
     title: 'Nothing ever changes',
