@@ -3,8 +3,7 @@ const usersRouter = require('express').Router()
 const User = require('../models/user')
 
 usersRouter.get('/', async (req, res) => {
-  const users = await User.find({})
-  //const userObjects = users.map (u => User ({}))
+  const users = await User.find({}).populate('blogs', { url: 1, title: 1, author: 1 })
   res.json(users)
 })
 
@@ -18,8 +17,9 @@ usersRouter.post('/', async (req, res) => {
       .end()
   }
 
-  const users = User.find({})
-  const unames = users.map(u => u.username)
+  const users = await User.find({})
+  const userList = users.map(u => u.toJSON())
+  const unames = userList.map(user => user.username)
 
   if (unames.includes(username)) {
     res
