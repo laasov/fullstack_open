@@ -15,7 +15,14 @@ blogsRouter.post('/', async (req, res, next) => {
     res.status(400).end()
   }
 
+  if (!body.token) {
+    return res.status(405).json({
+      error: 'you must log in to post a blog'
+    })
+  }
+
   const users = await User.find({})
+  //const user = await User.find({ token: body.token })
   const userList = users.map(u => u.toJSON())
   const user = userList[userList.length -  1]
   const tmpId = user.id
