@@ -10,6 +10,9 @@ const App = () => {
   const [username, setUsername] = useState('') // alexander
   const [password, setPassword] = useState('') // stack
   const [user, setUser] = useState(null)
+
+  const [addedMessage, setAddedMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -64,6 +67,9 @@ const App = () => {
         url: url
       }
     )
+
+    setAddedMessage(`a new blog ${title} by ${author} added!`)
+    setTimeout(() => {setAddedMessage(null)}, 5000)
 
     setTitle('')
     setAuthor('')
@@ -148,9 +154,23 @@ const App = () => {
     )
   )
 
+  const displayMessage = () => (
+    <div>
+      {addedMessage}
+    </div>
+  )
+
+  const displayError = () => (
+    <div>
+      {errorMessage}
+    </div>
+  )
+
   return (
     <div>
       <h2>blogs</h2>
+      {displayMessage()}
+      {displayError()}
       {user === null && loginForm()}
       {user !== null && userInformation()}
       {user !== null && blogForm()}
