@@ -2,4 +2,5 @@
 **/node_modules
 **/.env
 
+/VAULT
 /part2/data_for_countries/asd.txt
