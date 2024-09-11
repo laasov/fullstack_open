@@ -10,6 +10,10 @@ const App = () => {
   const [username, setUsername] = useState('') // alexander
   const [password, setPassword] = useState('') // stack
   const [user, setUser] = useState(null)
+  
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -50,6 +54,23 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
   }
 
+  const handleCreate = async (event) => {
+    event.preventDefault()
+    
+    await blogService.create(
+      {
+        author: author,
+        title: title,
+        url: url
+      }
+    )
+
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
           <div>
@@ -83,6 +104,44 @@ const App = () => {
     </div>
   )
 
+  const blogForm = () => (
+    <div>
+      <h2>create new</h2>
+      <form onSubmit={handleCreate}>
+        <div>
+          title:
+          <input
+            type="text"
+            value={title}
+            name="Title"
+            onChange={ ({target}) => setTitle(target.value)}
+          />
+        </div>
+        <div>
+          author:
+          <input
+            type="text"
+            value={author}
+            name="Author"
+            onChange={ ({target}) => setAuthor(target.value)}
+          />
+        </div>
+        <div>
+          url:
+          <input
+            type="text"
+            value={url}
+            name="Url"
+            onChange={ ({target}) => setUrl(target.value)}
+          />
+        </div>
+        <button type="submit">
+          create
+        </button>
+      </form>
+    </div>
+  )
+
   const blogDisplay = () => (
     blogs.map(blog =>
       <Blog key={blog.id} blog={blog} />
@@ -94,6 +153,7 @@ const App = () => {
       <h2>blogs</h2>
       {user === null && loginForm()}
       {user !== null && userInformation()}
+      {user !== null && blogForm()}
       {user !== null && blogDisplay()}
     </div>
   )
