@@ -19,7 +19,6 @@ const App = () => {
   
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -60,24 +59,15 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
   }
 
-  const handleCreate = async (event) => {
-    event.preventDefault()
-    
-    await blogService.create(
-      {
-        author: author,
-        title: title,
-        url: url
-      }
-    )
-
-    setAddedMessage(`a new blog ${title} by ${author} added!`)
-    setTimeout(() => {setAddedMessage(null)}, 5000)
-
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-
+  const handleCreate = (blogObject) => {
+    blogService
+      .create(blogObject)
+      .then(returnedBlog => {
+        console.log(returnedBlog)
+        setBlogs(blogs.concat(returnedBlog))
+        setAddedMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added!`)
+        setTimeout(() => {setAddedMessage(null)}, 5000)
+      })
   }
 
   const loginForm = () => (
@@ -124,15 +114,7 @@ const App = () => {
         <button onClick={() => setBlogFormVisible(true)}>new note</button>
       </div>
       <div style={showWhenVisible}>
-        <BlogForm
-          handleCreate={handleCreate}
-          handleTitleChange={({target}) => setTitle(target.value)}
-          handleAuthorChange={({target}) => setAuthor(target.value)}
-          handleUrlChange={({target}) => setUrl(target.value)}
-          title={title}
-          author={author}
-          url={url}
-        />
+        <BlogForm handleCreate={handleCreate}/>
         <button onClick={() => setBlogFormVisible(false)}>cancel</button>
       </div>
       </div>
