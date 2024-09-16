@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -10,6 +11,8 @@ const App = () => {
   const [username, setUsername] = useState('') // alexander
   const [password, setPassword] = useState('') // stack
   const [user, setUser] = useState(null)
+
+  const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   const [addedMessage, setAddedMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
@@ -110,43 +113,31 @@ const App = () => {
     </div>
   )
 
-  const blogForm = () => (
-    <div>
-      <h2>create new</h2>
-      <form onSubmit={handleCreate}>
-        <div>
-          title:
-          <input
-            type="text"
-            value={title}
-            name="Title"
-            onChange={ ({target}) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author:
-          <input
-            type="text"
-            value={author}
-            name="Author"
-            onChange={ ({target}) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url:
-          <input
-            type="text"
-            value={url}
-            name="Url"
-            onChange={ ({target}) => setUrl(target.value)}
-          />
-        </div>
-        <button type="submit">
-          create
-        </button>
-      </form>
-    </div>
-  )
+
+  const blogForm = () => {
+    const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
+    const showWhenVisible = { display : blogFormVisible ? '' : 'none' }
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+        <button onClick={() => setBlogFormVisible(true)}>new note</button>
+      </div>
+      <div style={showWhenVisible}>
+        <BlogForm
+          handleCreate={handleCreate}
+          handleTitleChange={({target}) => setTitle(target.value)}
+          handleAuthorChange={({target}) => setAuthor(target.value)}
+          handleUrlChange={({target}) => setUrl(target.value)}
+          title={title}
+          author={author}
+          url={url}
+        />
+        <button onClick={() => setBlogFormVisible(false)}>cancel</button>
+      </div>
+      </div>
+    )
+  }
 
   const blogDisplay = () => (
     blogs.map(blog =>
