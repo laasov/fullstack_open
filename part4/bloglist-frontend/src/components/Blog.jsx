@@ -4,6 +4,7 @@ import blogService from "../services/blogs"
 import { useState } from "react"
 
 const Blog = ({ blog }) => {
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -14,8 +15,6 @@ const Blog = ({ blog }) => {
   }
 
   const [likes, setLikes] = useState(blog.likes)
-  
-  const username = blog.user ? blog.user.name : 'no name'
 
   const handleLike = () => {
 
@@ -44,7 +43,7 @@ const Blog = ({ blog }) => {
             <br/>
             {likes} <button onClick={handleLike}>like</button>
             <br/>
-            {username}
+            {blog.user ? blog.user.name : 'no name'}
           </div>
         </Togglable>
       </div>
