@@ -31,6 +31,14 @@ const Blog = ({ blog }) => {
       .then(setLikes(updatedBlog.likes))
   }
 
+  const handleRemove = () => {
+    if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
+      blogService
+        .remove(blog.id)
+        .then(response => console.log(response.status))
+    }
+  }
+
   return (
     <div style={blogStyle}>
       <div>
@@ -44,6 +52,9 @@ const Blog = ({ blog }) => {
             {likes} <button onClick={handleLike}>like</button>
             <br/>
             {blog.user ? blog.user.name : 'no name'}
+          </div>
+          <div>
+            <button onClick={handleRemove}>remove</button>
           </div>
         </Togglable>
       </div>
