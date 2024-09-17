@@ -1,5 +1,8 @@
 import Togglable from "./Togglable"
 
+import blogService from "../services/blogs"
+import { useState } from "react"
+
 const Blog = ({ blog }) => {
   const blogStyle = {
     paddingTop: 10,
@@ -9,20 +12,37 @@ const Blog = ({ blog }) => {
     borderWidth: 1,
     marginBottom: 5
   }
+
+  const [likes, setLikes] = useState(blog.likes)
+  
   const username = blog.user ? blog.user.name : 'no name'
+
+  const handleLike = () => {
+
+    const updatedBlog = {
+      title: blog.title,
+      author: blog.author,
+      likes: blog.likes + 1,
+      url: blog.url,
+      user: blog.user ? blog.user.name : 'unnamed user'
+    }
+
+    blogService
+      .update(blog.id, updatedBlog)
+      .then(setLikes(updatedBlog.likes))
+  }
 
   return (
     <div style={blogStyle}>
       <div>
         {blog.title} {blog.author}
       </div>
-      <nobr/>
       <div>
         <Togglable buttonLabel='view'>
           <div>
             {blog.url}
             <br/>
-            {blog.likes} <button>like</button>
+            {likes} <button onClick={handleLike}>like</button>
             <br/>
             {username}
           </div>
