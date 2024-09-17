@@ -5,6 +5,7 @@ import BlogForm from './components/BlogForm'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -63,7 +64,6 @@ const App = () => {
     blogService
       .create(blogObject)
       .then(returnedBlog => {
-        console.log(returnedBlog)
         setBlogs(blogs.concat(returnedBlog))
         setAddedMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added!`)
         setTimeout(() => {setAddedMessage(null)}, 5000)
@@ -122,9 +122,7 @@ const App = () => {
   }
 
   const blogDisplay = () => (
-    blogs.map(blog =>
-      <Blog key={blog.id} blog={blog} />
-    )
+    blogs.map(blog => <Blog key={blog.id} blog={blog} />)
   )
 
   const displayMessage = () => (
