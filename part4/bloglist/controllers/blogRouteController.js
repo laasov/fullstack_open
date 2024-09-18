@@ -34,23 +34,25 @@ blogsRouter.post('/', async (req, res, next) => {
     res.status(400).end()
   }
 
-  const users = await User.find({})
-  //const user = await User.find({ token: body.token })
-  const userList = users.map(u => u.toJSON())
-  //const user = userList[userList.length -  1]
-  const tmpId = user.id
-  //const user = await User.findById(body.userId)
+  //const users = await User.find({})
+  // OLD const user = await User.find({ token: body.token })
+  //const userList = users.map(u => u.toJSON())
+  // OLD const user = userList[userList.length -  1]
+  //const tmpId = user.id
+  // OLD const user = await User.findById(body.userId)
   
   const blog = new Blog ({
     title: body.title,
     author: body.author,
     url: body.url,
     likes: body.likes ? body.likes : 0,
-    user: tmpId
+    user: user
   })
 
+  console.log("user id: " + user.id)
+
   const savedBlog = await blog.save()
-  const userToModify = await User.findById(tmpId)
+  const userToModify = await User.findById(user.id)
   userToModify.blogs = userToModify.blogs.concat(savedBlog._id)
   await userToModify.save()
 
@@ -71,11 +73,22 @@ blogsRouter.put('/:id', async (req, res, next) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes
+    likes: body.likes,
   }
 
-  await Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
-  res.status(200).end()
+  const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
+  const tmpBlog = updatedBlog.toJSON()
+  const userObject = await User.findById(updatedBlog.user).exec()
+  const tmpUser = userObject.toJSON()
+  const userData = {
+    username: tmpUser.username,
+    name: tmpUser.name,
+    id: tmpUser.id
+  }
+
+  tmpBlog.user = userData
+
+  res.status(200).json(tmpBlog)
 })
 
 module.exports = blogsRouter

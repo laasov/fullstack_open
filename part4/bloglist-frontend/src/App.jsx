@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
@@ -17,8 +17,7 @@ const App = () => {
   const [addedMessage, setAddedMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
+  const [likes, setLikes] = useState(0)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -35,6 +34,8 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const blogRef = useRef()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -69,22 +70,24 @@ const App = () => {
       })
   }
 
-  const handleLike = (blog) => {
+  const handleLike = async (blog) => {
 
     const updatedBlog = {
       title: blog.title,
       author: blog.author,
       likes: blog.likes + 1,
       url: blog.url,
-      user: blog.user ? blog.user.name : 'unnamed user'
+      user: blog.user ? blog.user : 'unnamed user',
+      id: blog.id
     }
 
-    blogService
-      .update(blog.id, updatedBlog)
-      .then(setLikes(updatedBlog.likes))
+    const response = await blogService.update(blog.id, updatedBlog)
+    blogRef.current.like()
+    setBlogs(blogs.map(elem => elem.id === response.id ? updatedBlog : elem))
   }
 
   const handleRemove = (blog) => {
+
     if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
       const removedId = blog.id
       blogService
@@ -149,8 +152,11 @@ const App = () => {
       .sort((a, b) => b.likes - a.likes)
       .map(blog =>  <Blog key={blog.id}
                           blog={blog}
+                          likes={likes}
+                          ref={blogRef}
                           handleLike={handleLike}
-                          handleRemove={handleRemove} 
+                          handleRemove={handleRemove}
+                          user={user}
                     />)
   )
 

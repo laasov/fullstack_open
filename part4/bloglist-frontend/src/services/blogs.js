@@ -19,7 +19,7 @@ const getAll = async () => {
 }
 
 const update = async (id, newObject) => {
-  const reponse = await axios.put(`${ baseUrl }/${id}`, newObject)
+  const response = await axios.put(`${ baseUrl }/${id}`, newObject)
   return response.data
 }
 

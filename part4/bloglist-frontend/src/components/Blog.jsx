@@ -1,10 +1,10 @@
+import { forwardRef, useImperativeHandle, useState } from "react"
 import Togglable from "./Togglable"
 
-import blogService from "../services/blogs"
-import { useState } from "react"
-
-const Blog = ({ blog, handleLike, handleRemove }) => {
-
+const Blog = forwardRef((props, refs) => {
+  const [likes, setLikes] = useState(props.blog.likes)
+  //const [tmpUser, setTmpUser] = useState(props.blog.user.username)
+  
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -14,52 +14,44 @@ const Blog = ({ blog, handleLike, handleRemove }) => {
     marginBottom: 5
   }
 
-  const [likes, setLikes] = useState(blog.likes)
+  const like = () => {
+    //console.log(props.blog)
+    setLikes(props.blog.likes + 1)
+  }
 
-  /* const handleLike = () => {
-
-    const updatedBlog = {
-      title: blog.title,
-      author: blog.author,
-      likes: blog.likes + 1,
-      url: blog.url,
-      user: blog.user ? blog.user.name : 'unnamed user'
+  useImperativeHandle(refs, () => {
+    return {
+      like
     }
+  })
 
-    blogService
-      .update(blog.id, updatedBlog)
-      .then(setLikes(updatedBlog.likes))
-  } */
-
-  /* const handleRemove = () => {
-    if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
-      blogService
-        .remove(blog.id)
-        .then(response => console.log(response.status))
-    }
-  } */
+  const loggedUser = props.user.username
+  const blogCreator = props.blog.user ? props.blog.user.username : ''
 
   return (
     <div style={blogStyle}>
       <div>
-        {blog.title} {blog.author}
+        {props.blog.title} {props.blog.author}
       </div>
       <div>
         <Togglable buttonLabel='view'>
           <div>
-            {blog.url}
+            {props.blog.url}
             <br/>
-            {likes} <button onClick={handleLike}>like</button>
+            {props.blog.likes} <button onClick={() => props.handleLike(props.blog)}>like</button>
             <br/>
-            {blog.user ? blog.user.name : 'no name'}
+            {props.blog.user ? props.blog.user.name : 'no name'}
           </div>
           <div>
-            <button onClick={() => handleRemove(blog)}>remove</button>
+            {
+              loggedUser === blogCreator && 
+              <button onClick={() => props.handleRemove(props.blog)}>remove</button>
+            }
           </div>
         </Togglable>
       </div>
   </div>
   )
-}
+})
 
 export default Blog
