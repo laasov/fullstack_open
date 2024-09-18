@@ -1,10 +1,9 @@
-import { forwardRef, useImperativeHandle, useState } from "react"
-import Togglable from "./Togglable"
+import { forwardRef, useImperativeHandle, useState } from 'react'
+import Togglable from './Togglable'
 
 const Blog = forwardRef((props, refs) => {
   const [likes, setLikes] = useState(props.blog.likes)
-  //const [tmpUser, setTmpUser] = useState(props.blog.user.username)
-  
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -44,14 +43,16 @@ const Blog = forwardRef((props, refs) => {
           </div>
           <div>
             {
-              loggedUser === blogCreator && 
+              loggedUser === blogCreator &&
               <button onClick={() => props.handleRemove(props.blog)}>remove</button>
             }
           </div>
         </Togglable>
       </div>
-  </div>
+    </div>
   )
 })
+
+Blog.displayName = 'Blog'
 
 export default Blog
