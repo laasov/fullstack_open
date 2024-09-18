@@ -69,6 +69,30 @@ const App = () => {
       })
   }
 
+  const handleLike = (blog) => {
+
+    const updatedBlog = {
+      title: blog.title,
+      author: blog.author,
+      likes: blog.likes + 1,
+      url: blog.url,
+      user: blog.user ? blog.user.name : 'unnamed user'
+    }
+
+    blogService
+      .update(blog.id, updatedBlog)
+      .then(setLikes(updatedBlog.likes))
+  }
+
+  const handleRemove = (blog) => {
+    if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
+      const removedId = blog.id
+      blogService
+        .remove(blog.id)
+        .then(setBlogs(blogs.filter(elem => elem.id != removedId)))
+    }
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
           <div>
@@ -123,7 +147,11 @@ const App = () => {
   const blogDisplay = () => (
     blogs
       .sort((a, b) => b.likes - a.likes)
-      .map(blog => <Blog key={blog.id} blog={blog} />)
+      .map(blog =>  <Blog key={blog.id}
+                          blog={blog}
+                          handleLike={handleLike}
+                          handleRemove={handleRemove} 
+                    />)
   )
 
   const displayMessage = () => (

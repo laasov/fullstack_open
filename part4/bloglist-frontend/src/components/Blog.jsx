@@ -3,7 +3,7 @@ import Togglable from "./Togglable"
 import blogService from "../services/blogs"
 import { useState } from "react"
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleLike, handleRemove }) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -16,7 +16,7 @@ const Blog = ({ blog }) => {
 
   const [likes, setLikes] = useState(blog.likes)
 
-  const handleLike = () => {
+  /* const handleLike = () => {
 
     const updatedBlog = {
       title: blog.title,
@@ -29,15 +29,15 @@ const Blog = ({ blog }) => {
     blogService
       .update(blog.id, updatedBlog)
       .then(setLikes(updatedBlog.likes))
-  }
+  } */
 
-  const handleRemove = () => {
+  /* const handleRemove = () => {
     if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
       blogService
         .remove(blog.id)
         .then(response => console.log(response.status))
     }
-  }
+  } */
 
   return (
     <div style={blogStyle}>
@@ -54,7 +54,7 @@ const Blog = ({ blog }) => {
             {blog.user ? blog.user.name : 'no name'}
           </div>
           <div>
-            <button onClick={handleRemove}>remove</button>
+            <button onClick={() => handleRemove(blog)}>remove</button>
           </div>
         </Togglable>
       </div>
