@@ -1,5 +1,8 @@
 import { forwardRef, useImperativeHandle, useState } from 'react'
+
 import Togglable from './Togglable'
+import BlogSmall from './BlogSmall'
+import BlogExpanded from './BlogExpanded'
 
 const Blog = forwardRef((props, refs) => {
   const [likes, setLikes] = useState(props.blog.likes)
@@ -14,8 +17,7 @@ const Blog = forwardRef((props, refs) => {
   }
 
   const like = () => {
-    //console.log(props.blog)
-    setLikes(props.blog.likes + 1)
+    setLikes(likes + 1)
   }
 
   useImperativeHandle(refs, () => {
@@ -29,26 +31,16 @@ const Blog = forwardRef((props, refs) => {
 
   return (
     <div style={blogStyle}>
-      <div>
-        {props.blog.title} {props.blog.author}
-      </div>
-      <div>
-        <Togglable buttonLabel='view'>
-          <div>
-            {props.blog.url}
-            <br/>
-            {props.blog.likes} <button onClick={() => props.handleLike(props.blog)}>like</button>
-            <br/>
-            {props.blog.user ? props.blog.user.name : 'no name'}
-          </div>
-          <div>
-            {
-              loggedUser === blogCreator &&
-              <button onClick={() => props.handleRemove(props.blog)}>remove</button>
-            }
-          </div>
-        </Togglable>
-      </div>
+      <BlogSmall title={props.blog.title} author={props.blog.author} />
+      <Togglable buttonLabel='view' className='toggleable'>
+        <BlogExpanded
+          blog={props.blog}
+          loggedUser={loggedUser}
+          blogCreator={blogCreator}
+          handleLike={props.handleLike}
+          handleRemove={props.handleRemove}
+        />
+      </Togglable>
     </div>
   )
 })
