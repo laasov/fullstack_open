@@ -3,6 +3,8 @@ import { forwardRef, useImperativeHandle, useState } from 'react'
 import Togglable from './Togglable'
 import BlogSmall from './BlogSmall'
 import BlogExpanded from './BlogExpanded'
+import Title from './Title'
+import Author from './Author'
 
 const Blog = forwardRef((props, refs) => {
   const [likes, setLikes] = useState(props.blog.likes)
@@ -30,18 +32,20 @@ const Blog = forwardRef((props, refs) => {
   const blogCreator = props.blog.user ? props.blog.user.username : ''
 
   return (
-    <div style={blogStyle}>
-      <BlogSmall title={props.blog.title} author={props.blog.author} />
-      <Togglable buttonLabel='view' className='toggleable'>
+    <>
+      <Title title={props.blog.title} />
+      <Author author={props.blog.author} />
+      <Togglable
+        buttonLabel='view'
+        className='togglableContent'>
         <BlogExpanded
           blog={props.blog}
           loggedUser={loggedUser}
           blogCreator={blogCreator}
           handleLike={props.handleLike}
-          handleRemove={props.handleRemove}
-        />
+          handleRemove={props.handleRemove}/>
       </Togglable>
-    </div>
+    </>
   )
 })
 

@@ -2,44 +2,73 @@ import { getByText, render, screen } from '@testing-library/react'
 import { expect } from 'vitest'
 import { within } from '@testing-library/dom'
 
+
 import Blog from './Blog'
+//import Togglable from './Togglable'
+
+const testBlog = {
+  title: 'dummy',
+  author: 'imbecile',
+  url: 'www.wow',
+  likes: 1
+}
+
+const testUser = {
+  name: 'batman',
+  username: 'kilohaili'
+}
+
+let container
 
 // eslint-disable-next-line no-undef
-test('Default display renders title and author, but not URL or likes', () => {
-  const testBlog = {
-    title: 'dummy title',
-    author: 'imbecile author',
-    url: 'www.wow.wow',
-    likes: 1
-  }
+/* beforeEach(() => {
+  container = render(
+    <Togglable buttonLabel="show...">
+      <div className="testDiv" >
+        togglable content
+      </div>
+    </Togglable>
+  ).container
+}) */
 
-  const testUser = {
-    name: 'batman',
-    username: 'kilohaili'
-  }
-
+// eslint-disable-next-line no-undef
+test('Renders the "Blog" component', async () => {
   render(<Blog
     blog={testBlog}
     likes={testBlog.likes}
-    user={testUser} />)
+    user={testUser}/>
+  )
 
-  const out = screen.getAllByText('dummy title')
+})
 
+test('Renders title and author', async () => {
+  render(<Blog
+    blog={testBlog}
+    likes={testBlog.likes}
+    user={testUser}/>
+  )
 
-  /* const { container } = render(<Blog blog={testBlog} likes={testBlog.likes} user={testUser} />)
+  const title = await screen.getByText(testBlog.title)
+  const author = await screen.getByText(testBlog.author)
 
-  const div = container.querySelector('.blog')
+  expect(title).toBeDefined()
+  expect(author).toBeDefined()
+})
 
-  console.log(div)
+test('Does not render URL and number of likes', async () => {
+  render(<Blog
+    blog={testBlog}
+    likes={testBlog.likes}
+    user={testUser}/>
+  )
+})
 
-  expect(div).toHaveTextContent('dummy title') */
-
-  //const { nonTogglable } = within(screen.getByPlaceholderText('non togglable'))
-  //expect(getByText('dummy title')).toBeInTheDocument()
-
-  //screen.debug(nonTogglable)
-  /* expect(author).toBeDefined()
-  expect(url).toBeDefined()
-  expect(likes).toBeDefined() */
-
+test('renders Togglable', () => {
+  const { container } = render(<Blog
+    blog={testBlog}
+    likes={testBlog.likes}
+    user={testUser}/>
+  )
+  const div = container.querySelector('.toggleContent')
+  screen.debug(div)
 })

@@ -1,8 +1,8 @@
-const BlogSmall = (props) => {
+const BlogSmall = ({ title, author }) => {
   return (
-    <div placeholder='non togglable'>
-      {props.title} {props.author}
-    </div>
+    <>
+      {title} {author}
+    </>
   )
 }
 
