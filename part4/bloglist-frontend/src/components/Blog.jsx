@@ -32,12 +32,13 @@ const Blog = forwardRef((props, refs) => {
   const blogCreator = props.blog.user ? props.blog.user.username : ''
 
   return (
-    <>
+    <div style={blogStyle}>
       <Title title={props.blog.title} />
       <Author author={props.blog.author} />
       <Togglable
         buttonLabel='view'
-        className='togglableContent'>
+        className='togglableContent'
+        placeholder='togglable'>
         <BlogExpanded
           blog={props.blog}
           loggedUser={loggedUser}
@@ -45,7 +46,7 @@ const Blog = forwardRef((props, refs) => {
           handleLike={props.handleLike}
           handleRemove={props.handleRemove}/>
       </Togglable>
-    </>
+    </div>
   )
 })
 

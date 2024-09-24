@@ -18,18 +18,28 @@ const testUser = {
   username: 'kilohaili'
 }
 
-let container
+describe('<Blog />', () => {
+  let container
+
+  beforeEach(() => {
+    container = render(
+      <Blog
+        blog={testBlog}
+        likes={testBlog.likes}
+        user={testUser}
+      />
+    ).container
+  })
+
+  test('at start the children are not displayed', () => {
+    const div = container.querySelector('div[style*="display: none"]')
+    expect(div).toBeInTheDocument()
+  })
+
+})
 
 // eslint-disable-next-line no-undef
-/* beforeEach(() => {
-  container = render(
-    <Togglable buttonLabel="show...">
-      <div className="testDiv" >
-        togglable content
-      </div>
-    </Togglable>
-  ).container
-}) */
+
 
 // eslint-disable-next-line no-undef
 test('Renders the "Blog" component', async () => {
@@ -41,34 +51,37 @@ test('Renders the "Blog" component', async () => {
 
 })
 
-test('Renders title and author', async () => {
+test('Renders title and author', () => {
   render(<Blog
     blog={testBlog}
     likes={testBlog.likes}
     user={testUser}/>
   )
 
-  const title = await screen.getByText(testBlog.title)
-  const author = await screen.getByText(testBlog.author)
+  const title = screen.getByText(testBlog.title)
+  const author = screen.getByText(testBlog.author)
 
   expect(title).toBeDefined()
   expect(author).toBeDefined()
 })
 
-test('Does not render URL and number of likes', async () => {
-  render(<Blog
-    blog={testBlog}
-    likes={testBlog.likes}
-    user={testUser}/>
-  )
-})
-
-test('renders Togglable', () => {
+/* test('Does not render URL and number of likes', async () => {
   const { container } = render(<Blog
     blog={testBlog}
     likes={testBlog.likes}
     user={testUser}/>
   )
-  const div = container.querySelector('.toggleContent')
-  screen.debug(div)
-})
+
+  const div = container.querySelector('.togglableContent')
+  expect(div).toHaveStyle('display: none')
+
+}) */
+
+/* test('renders Togglable', () => {
+  render(<Blog
+    blog={testBlog}
+    likes={testBlog.likes}
+    user={testUser}/>
+  )
+  screen.getByPlaceholderText('click to toggle')
+}) */
